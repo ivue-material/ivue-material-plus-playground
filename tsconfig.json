@@ -1,0 +1,30 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": [],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    // 跳过声明文件的类型检查
+    "skipLibCheck": true
+  },
+  // 指定要包含在程序中的文件名或模式数组
+  "include": [
+    "src"
+  ],
+  // 指定解析时应跳过的文件名或模式数组include
+  "exclude": [
+    "src/template"
+  ],
+  // 项目引用是一种将 TypeScript 程序构造成更小部分的方法。
+  // 使用项目引用可以大大缩短构建和编辑器的交互时间，强制组件之间的逻辑分离，
+  // 并以新的和改进的方式组织您的代码
+  "references": [
+    {
+      "path": "./tsconfig.vite-config.json"
+    }
+  ]
+}

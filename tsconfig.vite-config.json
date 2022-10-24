@@ -1,0 +1,11 @@
+{
+  // 要继承的另一个配置文件的路径
+  "extends": "@vue/tsconfig/tsconfig.node.json",
+  // 指定要包含在程序中的文件名或模式数组
+  "include": ["vite.config.*", "package.json"],
+  // 提供一种在解析模块时覆盖要搜索的默认文件名后缀列表的方法
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node"]
+  }
+}

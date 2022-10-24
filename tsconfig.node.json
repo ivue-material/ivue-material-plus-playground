@@ -1,0 +1,15 @@
+{
+  // 编译器选项
+  "compilerOptions": {
+    "composite": true,
+    // 模块解析策略
+    "module": "ESNext",
+    // 模块解析策略
+    "moduleResolution": "Node",
+    // 允许合成默认导入
+    // 当设置为 true 时，allowSyntheticDefaultImports允许您编写如下导入
+    // import React from "react";
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"]
+}
