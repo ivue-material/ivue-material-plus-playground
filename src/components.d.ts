@@ -9,4 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('ivue-material-plus/dist/unplugin-vue-components/es/ivue-loading')['IvueLoadingDirective']
+  }
 }

@@ -7,7 +7,7 @@ import vue from '@vitejs/plugin-vue';
 import Components from 'unplugin-vue-components/vite';
 
 // 自动按需引入
-import { IvueMaterialPlusResolver } from 'ivue-material-plus/resolvers/ivue-material-plus';
+import { IvueMaterialPlusResolver } from 'ivue-material-plus/resolvers/ivue-material-plus.js';
 
 // 自动导入 Vite、Webpack、Rollup 和 esbuild 的 API
 import AutoImport from 'unplugin-auto-import/vite';
@@ -54,12 +54,12 @@ export default defineConfig(async () => {
         dirs: [path.resolve(pathSrc, 'composables')],
         imports: ['vue', '@vueuse/core'],
         resolvers: [IvueMaterialPlusResolver()],
-        // dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
+        dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
       }),
       Components({
         dirs: [path.resolve(pathSrc, 'components')],
         resolvers: [IvueMaterialPlusResolver()],
-        // dts: path.resolve(pathSrc, 'components.d.ts'),
+        dts: path.resolve(pathSrc, 'components.d.ts'),
       }),
       Unocss(),
       Mkcert(),
