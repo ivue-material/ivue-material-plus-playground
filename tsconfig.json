@@ -9,7 +9,16 @@
       ]
     },
     // 跳过声明文件的类型检查
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // 指定ECMAScript目标版本, 默认"ES3", 最新"esnext"
+    "target": "es2018",
+    // 编译过程中需要引入的库文件的列表
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ],
   },
   // 指定要包含在程序中的文件名或模式数组
   "include": [
