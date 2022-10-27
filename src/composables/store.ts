@@ -3,7 +3,7 @@
 import { IS_DEV } from '@/constants';
 import { atou, utoa } from '@/utils/encode';
 import { File } from '@vue/repl';
-import { genImportMap, genVueLink } from '@/utils/dependency';
+import { genCdnLink, genImportMap, genVueLink } from '@/utils/dependency';
 import { mergeImportMap } from '@/utils/import-map';
 import { compileFile } from '@vue/repl';
 
@@ -14,6 +14,7 @@ import type { ImportMap } from '@/utils/import-map';
 // template
 import welcomeCode from '../template/welcome.vue?raw';
 import playgroundMainCode from '../template/playground-main.vue?raw';
+import ivueMaterialPlusCode from '../template/ivue-material-plus.js?raw';
 
 // 版本号
 export type VersionKey = 'vue' | 'ivueMaterialPlus'
@@ -50,6 +51,7 @@ export const USER_IMPORT_MAP = 'import_map.json';
 
 export const useStore = (initial: Initial) => {
 
+  // 当前安装ui库版本
   const versions = reactive(
     initial.versions || { vue: 'latest', ivueMaterialPlus: 'latest' }
   );
@@ -92,13 +94,18 @@ export const useStore = (initial: Initial) => {
   // 用户自定义软件包
   const userImportMap = $computed<ImportMap>(() => {
     const code = state.files[USER_IMPORT_MAP]?.code.trim();
-    if (!code) return {};
+
+    if (!code) {
+      return {};
+    }
     let map: ImportMap = {};
+
     try {
       map = JSON.parse(code);
     } catch (err) {
       console.error(err);
     }
+
     return map;
   });
 
@@ -114,9 +121,9 @@ export const useStore = (initial: Initial) => {
     setActive,
     addFile,
     deleteFile,
-    // getImportMap,
-    // initialShowOutput: false,
-    // initialOutputMode: 'preview',
+    getImportMap,
+    initialShowOutput: false,
+    initialOutputMode: 'preview',
   });
 
   // methods
@@ -158,6 +165,30 @@ export const useStore = (initial: Initial) => {
     }
 
     return files;
+  }
+
+  // 获取文件
+  function getFiles() {
+    const exported: Record<string, string> = {};
+
+    for (const file of Object.values(state.files)) {
+      // 是否隐藏文件
+      if (file.hidden) {
+        continue;
+      }
+
+      exported[file.filename] = file.code;
+    }
+
+    return exported;
+  }
+
+  // 编码为新字符串
+  function serialize() {
+    const state: SerializeState = { ...getFiles() };
+    state._o = userOptions;
+
+    return utoa(JSON.stringify(state));
   }
 
 
@@ -219,7 +250,6 @@ export const useStore = (initial: Initial) => {
 
     setActive(file.filename);
   }
-  console.log(IvueButton);
 
   // 删除文件
   async function deleteFile(filename: string) {
@@ -234,33 +264,128 @@ export const useStore = (initial: Initial) => {
         USER_IMPORT_MAP,
       ].includes(filename)
     ) {
-      // IvueMessage.warning(
-      //   'You cannot remove it, because Element Plus requires it.'
-      // );
+      IvueMessage.warning(
+        'You cannot remove it, because Element Plus requires it.'
+      );
       return;
     }
 
-    // if (
-    //   await IvueMaterialPlus.$IvueModal.confirm(
-    //     `Are you sure you want to delete ${filename}?`,
-    //     {
-    //       title: 'Delete File',
-    //       type: 'warning',
-    //       center: true,
-    //     }
-    //   )
-    // ) {
+    if (
+      await IvueModal.confirm(
+        `Are you sure you want to delete ${filename}?`,
+        {
+          title: 'Delete File',
+          type: 'warning',
+          center: true,
+        }
+      )
+    ) {
 
-    //   if (state.activeFile.filename === filename) {
-    //     setActive(APP_FILE);
-    //   }
+      if (state.activeFile.filename === filename) {
+        setActive(APP_FILE);
+      }
 
-    //   delete state.files[filename];
-    // }
+      delete state.files[filename];
+    }
   }
 
-  return {
+  // 获取合并软件包
+  function getImportMap() {
+    return importMap;
+  }
 
+  // 设置版本号
+  async function setVersion(key: VersionKey, version: string) {
+    switch (key) {
+      // 设置ui库版本号
+      case 'ivueMaterialPlus':
+        setIvueMaterialPlusVersion(version);
+        break;
+      // 设置vue版本
+      case 'vue':
+        await setVueVersion(version);
+        break;
+    }
+  }
+
+  // 设置ui库版本号
+  function setIvueMaterialPlusVersion(version: string) {
+    versions.ivueMaterialPlus = version;
+  }
+
+
+  function generateIvueMaterialPlusCode(version: string, styleSource?: string) {
+    const style = styleSource
+      ? styleSource.replace('#VERSION#', version)
+      : genCdnLink(
+        'ivue-material-plus',
+        version,
+        '/dist/styles/index.css'
+      );
+
+    // 替换链接地址
+    return ivueMaterialPlusCode.replace('#STYLE#', style);
+  }
+
+
+  // watch
+
+  // 监听合并软件包
+  watch(
+    $$(importMap),
+    (content) => {
+      // 添加文件
+      state.files[IMPORT_MAP] = new File(
+        IMPORT_MAP,
+        JSON.stringify(content, undefined, 2),
+        hideFile
+      );
+    },
+    { immediate: true, deep: true }
+  );
+
+  watch(
+    () => versions.ivueMaterialPlus,
+    (version) => {
+
+      // 设置ui库文件地址
+      const file = new File(
+        IVUE_MATERIAL_PLUS_FILE,
+        generateIvueMaterialPlusCode(version, userOptions.styleSource).trim(),
+        hideFile
+      );
+
+      // ui库文件
+      state.files[IVUE_MATERIAL_PLUS_FILE] = file;
+
+      // 编译文件
+      compileFile(store, file);
+    },
+    {
+      // 立即响应
+      immediate: true
+    }
+  );
+
+
+  return {
+    ...store,
+
+    // versions
+    versions,
+    // useToggle
+    nightly: $$(nightly),
+    // 用户选项
+    userOptions: $$(userOptions),
+
+    // 安装
+    init,
+    // 编码为新字符串
+    serialize,
+    // 设置版本号
+    setVersion,
+    // useToggle
+    toggleNightly,
   };
 };
 

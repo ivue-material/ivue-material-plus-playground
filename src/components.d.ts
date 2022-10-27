@@ -7,9 +7,17 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Header: typeof import('./components/Header.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    IvueChip: typeof import('ivue-material-plus/dist/unplugin-vue-components/es')['IvueChip']
+    IvueIcon: typeof import('ivue-material-plus/dist/unplugin-vue-components/es')['IvueIcon']
+    IvueOption: typeof import('ivue-material-plus/dist/unplugin-vue-components/es')['IvueOption']
+    IvuePopover: typeof import('ivue-material-plus/dist/unplugin-vue-components/es')['IvuePopover']
+    IvueSelect: typeof import('ivue-material-plus/dist/unplugin-vue-components/es')['IvueSelect']
+    IvueTag: typeof import('ivue-material-plus/dist/unplugin-vue-components/es')['default']
+    Settings: typeof import('./components/Settings.vue')['default']
   }
   export interface ComponentCustomProperties {
-    vLoading: typeof import('ivue-material-plus/dist/unplugin-vue-components/es/ivue-loading')['IvueLoadingDirective']
+    vLoading: typeof import('ivue-material-plus/dist/unplugin-vue-components/es')['IvueLoading']
   }
 }

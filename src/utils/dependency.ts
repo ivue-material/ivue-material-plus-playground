@@ -1,8 +1,10 @@
+import { compare } from 'compare-versions';
 
 // ts
 import type { Versions } from '@/composables/store';
 import type { ImportMap } from '@/utils/import-map';
-
+import type { MaybeRef } from '@vueuse/core';
+import type { Ref } from 'vue';
 
 export type Cdn = 'unpkg' | 'jsdelivr' | 'jsdelivr-fastly'
 export const cdn = useLocalStorage<Cdn>('setting-cdn', 'jsdelivr-fastly');
@@ -58,6 +60,7 @@ export const genCdnLink = (
   path: string
 ) => {
   version = version ? `@${version}` : '';
+
   switch (cdn.value) {
     case 'jsdelivr':
       return `https://cdn.jsdelivr.net/npm/${pkg}${version}${path}`;
@@ -84,4 +87,43 @@ export const genVueLink = (version: string) => {
     compilerSfc,
     runtimeDom,
   };
+};
+
+
+// 获取版本号
+export const getVersions = (pkg: MaybeRef<string>) => {
+  const url = computed(
+    () => `https://data.jsdelivr.com/v1/package/npm/${unref(pkg)}`
+  );
+
+  // fetch
+  return useFetch(url, {
+    initialData: [],
+    afterFetch: (ctx) => ((ctx.data = ctx.data.versions), ctx),
+    refetch: true,
+  }).json<string[]>().data as Ref<string[]>;
+};
+
+// 获取ui库版本号
+export const getSupportedIvueVersions = () => {
+  const pkg = computed(() =>
+    'ivue-material-plus'
+  );
+
+  const versions = $(getVersions(pkg));
+
+  // 获取0.1.0以后的版本号
+  return computed(() => {
+    return versions.filter((version) => compare(version, '0.1.0', '>='));
+  });
+};
+
+// vue版本号
+export const getSupportedVueVersions = () => {
+  const versions = $(getVersions('vue'));
+
+  // 获取3.2.0以后的版本号
+  return computed(() =>
+    versions.filter((version) => compare(version, '3.2.0', '>='))
+  );
 };

@@ -8,7 +8,7 @@ const msg = ref('Hello World!');
 
 <template>
   <h1>{{ msg }}</h1>
-  <!-- <el-input v-model="msg" /> -->
+  <ivue-input v-model="msg" />
 
   <p>
     <!-- Element Plus {{ EpVersion }} + Vue {{ vueVersion }} -->

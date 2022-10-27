@@ -1,38 +1,60 @@
 <template>
     <!-- 内容 -->
-    <div v-if="!loading" antialiased>{{loading}}</div>
+    <div v-if="!loading" antialiased>
+        <!-- 头部 -->
+        <Header :store="store"></Header>
+        <!-- 内容 -->
+        <Repl
+            :store="store"
+            show-compile-output
+            auto-resize
+            :sfc-options="sfcOptions"
+            :clear-console="false"
+            :show-import-map="store.userOptions.value.showHidden || IS_DEV"
+            ref="repl"
+        ></Repl>
+    </div>
     <!-- 加载中 -->
     <template v-else>
         <div v-loading="{ text: 'Loading...' }" h-100vh />
     </template>
 </template>
 
-<script lang="ts">
-import { ref } from 'vue';
+<script setup lang="ts">
+import { Repl } from '@vue/repl';
+import { IS_DEV } from './constants';
+
+// ts
 import type { UserOptions } from '@/composables/store';
+import type { SFCOptions } from '@vue/repl';
 
-export default {
-    setup() {
-        // ref
-        let loading = ref(true);
+// ref
+let loading = ref<boolean>(true);
 
-        // 用户选项
-        const initialUserOptions: UserOptions = {};
+// 用户选项
+const initialUserOptions: UserOptions = {};
 
-        const store = useStore({
-            serializedState: location.hash.slice(1),
-            userOptions: initialUserOptions,
-        });
+// 注册配置文件
+const store = useStore({
+    serializedState: location.hash.slice(1),
+    userOptions: initialUserOptions,
+});
 
-// store.init().then(() => (loading = false));
+// 安装完成
+store.init().then(() => {
+    loading.value = false;
+});
 
-
-        console.log('store', store);
-        return {
-            loading,
-        };
+// enable experimental features
+const sfcOptions: SFCOptions = {
+    script: {
+        reactivityTransform: true,
     },
 };
+
+// persist state
+// 设置history -> 编码的文件URI -> url链接
+// watchEffect(() => history.replaceState({}, '', `#${store.serialize()}`));
 </script>
 
 <style lang="scss">

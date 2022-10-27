@@ -1,6 +1,9 @@
-import { getCurrentInstance } from 'vue';
+import {
+  getCurrentInstance
+} from 'vue';
 import IvueMaterialPlus from 'ivue-material-plus';
 
+console.log('IvueMaterialPlus', IvueMaterialPlus);
 let installed = false;
 await loadStyle();
 
@@ -8,6 +11,7 @@ export function setupIvueMaterialPlus() {
   if (installed) {
     return;
   }
+  console.log('IvueMaterialPlus');
 
   // 注册组件
   const instance = getCurrentInstance();
