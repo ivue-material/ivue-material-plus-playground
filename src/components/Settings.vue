@@ -2,7 +2,7 @@
     <div class="settings">
         <div class="settings-title">CDN</div>
         <!-- select -->
-        <ivue-select v-model="cdn" w-full transfer>
+        <ivue-select class="settings-select" v-model="cdn" w-full transfer>
             <ivue-option value="jsdelivr" label="jsDelivr" />
             <ivue-option value="jsdelivr-fastly" label="jsDelivr Fastly" />
             <ivue-option value="unpkg" label="unpkg" />
@@ -21,6 +21,10 @@ import { cdn } from '@/utils/dependency';
 
     &-title{
       margin-right: 10px;
+    }
+
+    &-select{
+        width: 150px;
     }
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
     <nav class="header">
         <!-- 标题 -->
-        <h1 leading="[var(--nav-height)]" m-0 inline-block font-medium>
+        <h1 class="header-title" leading="[var(--nav-height)]" m-0 inline-block font-medium>
             <!-- img -->
             <img h-24px relative mr-2 v="mid" top="-2px" alt="logo" src="../assets/logo.png" />
-            <div lt-sm-hidden flex="inline row gap-1" items-center>
-                <span>Ivue Material Plus Playground</span>
+            <div class="header-content" lt-sm-hidden flex="inline row gap-1" items-center>
+                <span class="header-name">Ivue Material Plus Playground</span>
                 <ivue-chip
                     class="chip-small"
                     color="#5B8EFF"
@@ -106,7 +106,7 @@ const versions = reactive<Record<VersionKey, Version>>({
 async function setVersion(key: VersionKey, v: string) {
     versions[key].active = 'loading...';
 
-    props.store.setVersion(key, v);
+   await props.store.setVersion(key, v);
 
     versions[key].active = v;
 }
@@ -115,7 +115,9 @@ async function setVersion(key: VersionKey, v: string) {
 async function handleCopyLink() {
     await navigator.clipboard.writeText(location.href);
 
-    IvueMessage.success('Sharable URL has been copied to clipboard.');
+    IvueMessage.success({
+        content: 'Sharable URL has been copied to clipboard.',
+    });
 }
 </script>
 
@@ -134,6 +136,22 @@ nav {
 
 .header {
     font-size: 14px;
+
+    &-title {
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+
+    &-name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    &-content{
+        overflow: hidden;
+    }
 
     .text {
         white-space: nowrap;

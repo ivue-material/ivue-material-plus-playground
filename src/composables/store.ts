@@ -264,9 +264,10 @@ export const useStore = (initial: Initial) => {
         USER_IMPORT_MAP,
       ].includes(filename)
     ) {
-      IvueMessage.warning(
-        'You cannot remove it, because Element Plus requires it.'
-      );
+      IvueMessage.warning({
+        content: 'You cannot remove it, because Element Plus requires it.'
+      });
+
       return;
     }
 
