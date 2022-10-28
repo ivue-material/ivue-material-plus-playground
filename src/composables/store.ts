@@ -313,7 +313,7 @@ export const useStore = (initial: Initial) => {
     versions.ivueMaterialPlus = version;
   }
 
-
+  // 获取 ivue-material-plus.js code
   function generateIvueMaterialPlusCode(version: string, styleSource?: string) {
     const style = styleSource
       ? styleSource.replace('#VERSION#', version)

@@ -54,7 +54,7 @@ const sfcOptions: SFCOptions = {
 
 // persist state
 // 设置history -> 编码的文件URI -> url链接
-// watchEffect(() => history.replaceState({}, '', `#${store.serialize()}`));
+watchEffect(() => history.replaceState({}, '', `#${store.serialize()}`));
 </script>
 
 <style lang="scss">

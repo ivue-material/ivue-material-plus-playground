@@ -7,10 +7,9 @@ const msg = ref('Hello World!');
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
-  <ivue-input v-model="msg" />
-
-  <p>
-    <!-- Element Plus {{ EpVersion }} + Vue {{ vueVersion }} -->
-  </p>
+    <h1>{{ msg }}</h1>
+    <ivue-input v-model="msg"></ivue-input>
+    <p>
+        <!-- Element Plus {{ EpVersion }} + Vue {{ vueVersion }} -->
+    </p>
 </template>

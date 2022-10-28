@@ -30,10 +30,11 @@ export const genImportMap = (
       version: vue,
       path: '/dist/shared.esm-bundler.js',
     },
+    // 使用 esm 模式的包
     'ivue-material-plus': {
       pkg: 'ivue-material-plus',
       version: ivueMaterialPlus,
-      path: '/dist/ivue-material-plus.min.js',
+      path: '/dist/ivue-material-plus.min.esm.js',
     },
     'ivue-material-plus/': {
       pkg: 'ivue-material-plus',

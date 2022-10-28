@@ -86,7 +86,10 @@ function getSideEffects(componentsName: string, options) {
 // 请求组件
 const resolveComponent = (componentsName: string, options: resolverOptions): ComponentInfo | undefined => {
   // 使用依赖组件
-  let useDependentComponentsData = null;
+  let useDependentComponentsData: {
+    name: string,
+    from: string
+  } | null = null;
 
   useDependentComponents.forEach((item) => {
     item.dependent.forEach((dependent) => {
@@ -108,6 +111,7 @@ const resolveComponent = (componentsName: string, options: resolverOptions): Com
     return useDependentComponentsData;
   }
 
+  console.log('pakPath', pakPath);
   return {
     name: options.name,
     from: `${pakPath}/${options.ssr ? 'lib' : 'es'}`,
@@ -163,8 +167,6 @@ const resolveDirective = (name: string, options: resolverOptions) => {
     return;
   }
 
-  console.log('directive.name', name)
-
   return {
     name: directive.name,
     from: `${pakPath}/${options.ssr ? 'lib' : 'es'}`,
@@ -175,12 +177,12 @@ const resolveDirective = (name: string, options: resolverOptions) => {
   };
 };
 
-export function IvueMaterialPlusResolver(options: resolverOptions): ComponentResolver[] {
+export function IvueMaterialPlusResolver(options?: resolverOptions): ComponentResolver[] {
 
-  let optionsResolved = {
+  const optionsResolved = {
     ssr: false,
     ...options,
-  }
+  };
 
   return [{
     type: 'component',
