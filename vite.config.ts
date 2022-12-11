@@ -33,6 +33,10 @@ export default defineConfig(async () => {
         '@': pathSrc,
       },
     },
+    base: 'playground',
+    build: {
+      outDir: 'playground'
+    },
     // 定义全局常量替换方式
     define: {
       'import.meta.env.APP_VERSION': JSON.stringify(pkg.version),
