@@ -724,6 +724,10 @@ setupIvueMaterialPlus();
 .app {
     padding: 10px;
 }
+
+h4 {
+    margin: 12px 0;
+}
 </style>
 `,Pce=`import {
   getCurrentInstance
