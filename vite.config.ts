@@ -27,15 +27,17 @@ export default defineConfig(async () => {
   // @vue/repl 版本
   const repl = await getPackageInfo('@vue/repl');
 
+  const isProduction = process.env.NODE_ENV === 'production';
+
   return {
     resolve: {
       alias: {
         '@': pathSrc,
       },
     },
-    base: 'playground',
+    base: isProduction ? 'https://cdn.lovevuerk.com/playground/' : 'playground',
     build: {
-      outDir: 'playground'
+      outDir: 'playground',
     },
     // 定义全局常量替换方式
     define: {
